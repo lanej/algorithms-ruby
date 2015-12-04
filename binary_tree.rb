@@ -29,6 +29,14 @@ class BinaryTree
       end
     end
 
+    def find(val)
+      case value <=> val
+      when 1 then !!less && less.find(val)
+      when -1 then !!more && more.find(val)
+      else true # equals
+      end
+    end
+
     private
 
     def insert_less(v)
@@ -50,5 +58,5 @@ class BinaryTree
     root ? root.insert(val) : (@root = Node.new(val))
   end
 
-  def_delegators :root, :each
+  def_delegators :root, :each, :find
 end
