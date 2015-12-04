@@ -1,4 +1,3 @@
-require "twopass/version"
 require "logger"
 require "pp"
 require "set"
@@ -68,16 +67,5 @@ class DisjointSet
     @roots = {}
 
     Array(seed).each { |set| add(set.to_set) }
-  end
-
-  class BinaryTree
-    class Node
-      attr_reader :parent, :less, :more, :value
-
-      def initialize(value, parent: nil)
-        @value  = value
-        @parent = parent
-      end
-    end
   end
 end
