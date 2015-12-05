@@ -9,7 +9,12 @@ RSpec.describe BinaryTree do
   end
 
   it "finds values" do
-    expect(subject.find(5)).to eq(true)
-    expect(subject.find(4)).to eq(false)
+    expect(subject.exists?(5)).to eq(true)
+    expect(subject.exists?(4)).to eq(false)
+  end
+
+  it "removes values" do
+    subject.remove(5)
+    expect(subject.each.to_a).to eq([1,3,6,7,10])
   end
 end

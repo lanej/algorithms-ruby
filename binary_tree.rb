@@ -2,9 +2,9 @@ class BinaryTree
   extend Forwardable
 
   class Node
-    attr_reader :less, :more, :value
+    attr_reader :value
 
-    attr_accessor :parent
+    attr_accessor :parent, :less, :more
 
     def initialize(value, parent: nil)
       @value  = value
@@ -29,12 +29,47 @@ class BinaryTree
       end
     end
 
-    def find(val)
-      case value <=> val
-      when 1 then !!less && less.find(val)
-      when -1 then !!more && more.find(val)
-      else true # equals
+    def find(&block)
+      walk.find(&block)
+    end
+
+    def walk(&block)
+      if block_given?
+        (less && less.walk(&block)) ||
+          yield(self) ||
+          (more && more.walk(&block))
+      else
+        enum_for(:walk)
       end
+    end
+
+    def exists?(val)
+      !!find { |n| n.value == val }
+    end
+
+    def remove(val)
+      node = find { |n| n.value == val }
+
+      return false unless node
+
+
+      next_node = node.more || node.less
+
+      if node.parent
+        if node.parent.less == node
+          node.parent.less = next_node
+        elsif node.parent.more == node
+          node.parent.more = next_node
+        end
+      end
+
+      if next_node
+        next_node.parent = node.parent
+      end
+
+      node.parent = nil # out of the tree
+
+      node
     end
 
     private
@@ -58,5 +93,5 @@ class BinaryTree
     root ? root.insert(val) : (@root = Node.new(val))
   end
 
-  def_delegators :root, :each, :find
+  def_delegators :root, :each, :remove, :find, :exists?
 end
